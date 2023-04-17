@@ -3,7 +3,7 @@ import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createAndAuthUser } from '@/utils/test/create-and-auth-user'
 
-describe('Search Gyms (e2e)', () => {
+describe('Nearby Gyms (e2e)', () => {
 
   beforeAll(async () => {
     await app.ready()
@@ -13,11 +13,11 @@ describe('Search Gyms (e2e)', () => {
     await app.close()
   })
 
-  it('should be able to search gyms by title', async () => {
+  it('should be able to list nearby gyms', async () => {
 
     const { token } = await createAndAuthUser(app)
 
-    //criando primeira academia
+    //criando primeira academia (perto)
     const gym1 = await request(app.server)
       .post('/gyms')
       //mandando token de autenticação
@@ -27,12 +27,12 @@ describe('Search Gyms (e2e)', () => {
         description: 'Some description',
         phone: '1199999999',
         latitude: -27.2092052,
-        longitude: -49.640191
+        longitude: -49.6401891
       })
     console.log('Gym1: ', gym1.statusCode)
     console.log('Gym1: ', gym1.headers)
 
-    //criando segunda academia
+    //criando segunda academia (longe)
     const gym2 = await request(app.server)
       .post('/gyms')
       //mandando token de autenticação
@@ -41,15 +41,15 @@ describe('Search Gyms (e2e)', () => {
         title: 'TypeScript Gym',
         description: 'Some description',
         phone: '1199999999',
-        latitude: -27.2092052,
-        longitude: -49.640191
+        latitude: -26.2544728,
+        longitude: -49.5222467
       })
 
     const response = await request(app.server)
-      .get('/gyms/search')
+      .get('/gyms/nearby')
       .query({
-        query: 'JavaScript',
-        page: 1
+        latitude: -27.2092052,
+        longitude: -49.6401891
       })
       .set('Authorization', `Bearer ${token}`)
       .send()
