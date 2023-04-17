@@ -10,7 +10,7 @@ export async function search (req: FastifyRequest, rep: FastifyReply) {
     })
 
     //extraindo dados da request após validar usando o schema do Zod
-    const { query, page } = searchGymsQuerySchema.parse(req.body)
+    const { query, page } = searchGymsQuerySchema.parse(req.query)
 
     //chamando a factory
     const searchGymUseCase = makeSearchGymsUseCase()
