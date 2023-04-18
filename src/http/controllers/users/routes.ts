@@ -3,6 +3,7 @@ import { register } from "./register";
 import { authenticate } from "./authenticate";
 import { profile } from "./profile";
 import { verifyJWT } from "@/http/middlewares/verify-jwt";
+import { refresh } from "./refresh";
 
 export async function userRoutes(app:FastifyInstance){
 
@@ -12,6 +13,8 @@ export async function userRoutes(app:FastifyInstance){
     //POST na rota '/sessions' é autenticação (tentativa de login)
     app.post('/sessions', authenticate)
 
+    //esta rota deve ser chamada caso o user perca autenticação
+    app.patch('/token/refresh', refresh)
 
     //==========ROTAS DE USUÁRIO AUTENTICADO==========
 

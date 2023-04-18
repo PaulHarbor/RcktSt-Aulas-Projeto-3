@@ -17,7 +17,7 @@ describe('Validate Checkin (e2e)', () => {
   it('should be able to validate a checkin', async () => {
 
     //criando e autenticando usuário no banco de teste
-    const { token } = await createAndAuthUser(app)
+    const { token } = await createAndAuthUser(app, true)
     //buscando primeiro user (vai resultado no criado acima)
     const user = await prisma.user.findFirstOrThrow() 
     //criando academia pra user fazer checkin

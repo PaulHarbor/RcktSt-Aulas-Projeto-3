@@ -245,3 +245,6 @@
 # Instalado supertest
     npm i supertest -D
 
+# Instalado cookies do fastify
+  npm i @fastify/cookies
+
