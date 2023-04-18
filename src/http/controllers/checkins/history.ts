@@ -9,7 +9,7 @@ export async function history (req: FastifyRequest, rep: FastifyReply) {
     })
 
     //extraindo dados da request após validar usando o schema do Zod
-    const { page } = checkinHistoryQuerySchema.parse(req.body)
+    const { page } = checkinHistoryQuerySchema.parse(req.query)
 
     //chamando a factory
     const fetchUserCheckinsHistoryUseCase = makeFetchUserCheckinHistoryUseCase()
