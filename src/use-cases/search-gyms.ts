@@ -1,40 +1,34 @@
-import { Gym} from '@prisma/client'
+import { Gym } from '@prisma/client'
 import { GymsRepository } from '@/repositories/gym-repository'
 
 
 interface SearchGymsCaseRequest {
-    query: string
-    page: number
+  query: string //we need a query to look for
+  page: number //and a page number to list the findings
 }
 
 interface SearchGymsCaseResponse {
-    gyms: Gym[]
+  gyms: Gym[] //the response should be an array of gyms
 }
 
-//exportando classe que cadastra academia
-//essa classe consegue cadastrar usando qualquer repositório
-export class SearchGymsUseCase{
+export class SearchGymsUseCase {
+  
+  constructor(private gymsRepository: GymsRepository) { }
 
-    //o construtor recebe a dependência como argumento
-    //essa dependência é uma interface criada para qualquer tipo de repositório (ex.:Prisma)
-    constructor(private gymsRepository:GymsRepository) {}
+  async execute({
+    query,
+    page    
+  }: SearchGymsCaseRequest): Promise<SearchGymsCaseResponse> {
 
-    //função que cadastra academia, a função recebe um argumento do tipo CreateGymCaseRequest da interface acima
-    async execute({
-        query,
-        page
-                                //e retorna uma promise com dados do tipo SearchGymCaseResponse (a outra interface acima)
-    }: SearchGymsCaseRequest): Promise<SearchGymsCaseResponse>{    
-                
-        const gyms = await this.gymsRepository.searchMany(
-            query,
-            page
-        )
+    const gyms = await this.gymsRepository.searchMany(
+      query,
+      page
+    )
 
-        return {
-            gyms,
-        }
-         
+    return {
+      gyms,
     }
+
+  }
 
 }

@@ -11,6 +11,6 @@ services:
       - POSTGRESQL_DATABASE=apisolid
 
 
-# esta é uma versão 'traduzida' do comando usado para criar o banco
+# this is a 'translated' version of the command used to create the database
 # docker run --name api-solid-pg -e POSTGRESQL_USERNAME=docker -e POSTGRESQL_PASSWORD=docker -e POSTGRESQL_DATABASE=apisolid -p 5432:5432  bitnami/postgresql
-# podemos subir o banco com 'docker compose up -d'
+# we can start the database with 'docker compose up -d'

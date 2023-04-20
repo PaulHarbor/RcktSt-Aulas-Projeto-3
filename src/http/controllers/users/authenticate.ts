@@ -3,41 +3,39 @@ import { z } from "zod"
 import { InvalidCredentialsError } from "@/use-cases/errors/invalid-credentials-error"
 import { makeAuthenticateUseCase } from "@/use-cases/factories/make-authenticate-use-case"
 
-//função genérica de autenticação
+//authentication function
 export async function authenticate(req: FastifyRequest, rep: FastifyReply) {
 
-  //o schema determina como deverá ser o body da request
-  //ou seja, pra registrar um novo user, tem que enviar nome, email e senha
+  //to authenticate a user, the request must conform to this schema
   const authenticateBodySchema = z.object({
     email: z.string().email(),
     password: z.string().min(6)
   })
 
-  //extraindo dados da request após validar usando o schema do Zod
+  //extracting request data after validating with Zod
   const { email, password } = authenticateBodySchema.parse(req.body)
 
   try {
 
-    const authenticateUseCase = makeAuthenticateUseCase()
+    const authenticateUseCase = makeAuthenticateUseCase() //factory
 
-    //chamando função da classe importada de use-case/register.ts
-    //passando pra ela os dados da request extraídos acima
     const { user } = await authenticateUseCase.execute({
       email,
       password
     })
 
-    //criando novo Json Web Token
+    //creating new Json Web Token (access token)
     const token = await rep.jwtSign(
       {
-        role: user.role
+        role: user.role //payload
       },
       {
-        sign: {
-          sub: user.id
+        sign: { //signature
+          sub: user.id //subject
         }
       })
-    //criando refresh token
+
+    //creating refresh token (used to obtain a new access token)
     const refreshToken = await rep.jwtSign(
       {
         role: user.role
@@ -45,29 +43,26 @@ export async function authenticate(req: FastifyRequest, rep: FastifyReply) {
       {
         sign: {
           sub: user.id,
-          expiresIn: '7d'
-          //o usuário só perde o login se ficar 7 dias sem entrar na aplicação
+          expiresIn: '7d' //the refresh token expires in seven days
         }
       })
 
     return rep
       .setCookie('refreshToken', refreshToken, {
-        path: '/', //esse path permite q o cookie seja lido por qualquer rota
-        secure: true, //usar encriptação https
-        sameSite: true, //cookie só acessível no mesmo domain
-        httpOnly: true //cookie só acessível pelo back-end via http
+        path: '/', //this path allows the cookie to be read by any application route
+        secure: true, //set to use https encryption
+        sameSite: true, //cookie only accessible on the same domain
+        httpOnly: true //cookie only accessible by the back-end via http
       })
       .status(200)
       .send({ token })
 
   } catch (err) {
 
-    //se o erro for do tipo que criamos lá em use-cases/errors
     if (err instanceof InvalidCredentialsError) {
       return rep.status(400).send({ message: err.message })
     }
 
-    //se o erro não for de nenhum tipo acima, mandar ele 'seco'
     throw err
   }
 }

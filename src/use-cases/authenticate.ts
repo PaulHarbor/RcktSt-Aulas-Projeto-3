@@ -4,7 +4,7 @@ import { compare } from "bcryptjs";
 import { User } from "@prisma/client";
 
 
-//criando interfaces para request e response da autenticação
+//interfaces for request and response of the authentication use case
 interface AuthenticateUseCaseRequest {
     email:string,
     password: string,
@@ -14,34 +14,36 @@ interface AuthenticateUseCaseResponse {
     user: User
 }
 
-//classe para autenticação de usuário
+//class for user authentication
 export class AuthenticateUseCase {
 
     constructor(
-        private usersRepository: UsersRepository,
+        private usersRepository: UsersRepository, //receiving whatever repository we're using (ex: Prisma)
     ) {}
 
-    async execute({
+    async execute({ //method that authenticates user
         email,
         password
     }:AuthenticateUseCaseRequest):Promise<AuthenticateUseCaseResponse> {
 
-        //buscando usuário com email especificado na tentativa de login (autenticação)
+        //searching for user with email used in authentication attempt
         const user = await this.usersRepository.findByEmail(email)
 
-        //caso não encontre o usuário
+        //if it doesn't find a user
         if(!user) {
             throw new InvalidCredentialsError()
         }
 
-        //verificando se a senha está correta
+        //verifying password with the bcrypt 'compare' method
+        //it hashes the first argument and compares with the second (which should be a hash too)
         const doesPasswordMatch = await compare(password, user.password_hash)
 
+        //if password doesn't match
         if(!doesPasswordMatch){
             throw new InvalidCredentialsError()            
         }
 
-        //se deu tudo certo, retorne o usuário
+        //everything's fine? return user
         return {
             user,
         }

@@ -7,8 +7,8 @@ export function getDistanceBetweenCoordinates(
     from:Coordinate,
     to:Coordinate
 ) {
-    //nem tente entender a função abaixo. basta saber que é um cálculo náutico
-    //para saber a distância entre duas coordenadas
+    //don't try to understand the function below
+    //suffice to say it's a nautical calculation to find the distance between two coordinates
     if (from.latitude === to.latitude && from.longitude === to.longitude) {
         return 0
       }

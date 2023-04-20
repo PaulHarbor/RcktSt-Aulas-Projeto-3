@@ -19,17 +19,20 @@ export class PrismaGymsRepository implements GymsRepository{
             SELECT * FROM gyms
             WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
         `
+        //this is a raw SQL query executed by Prisma
+        //the long WHERE statement is a nautical calculation of the distance between two coordinates
+        //then it fetches only those who are less than 10km away
 
         return gyms
     }
 
-    async searchMany(query: string, page: number){
-        const gyms = await prisma.gym.findMany({
+    async searchMany(query: string, page: number){ //this method was created by me
+        const gyms = await prisma.gym.findMany({ //this one comes with Prisma
             where:{
-                title:{contains:query},                
+                title:{contains:query}, //the query makes search on title only             
             },
-            take:20,
-            skip:(page-1)*20
+            take:20, //show 20 per page
+            skip:(page-1)*20 //calculate when each page begins      
         })
 
         return gyms

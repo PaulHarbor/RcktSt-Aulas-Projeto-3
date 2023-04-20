@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-//isto abaixo é pro vitest conseguir entender as importações usando @
+//this below is for vitest to understand imports using @
 export default defineConfig({
     plugins: [tsconfigPaths()],
     test: {

@@ -21,12 +21,12 @@ GymPass style app.
 -[x] usuário não pode fazer 2 check-ins no mesmo dia;
 -[x] usuário não pode fazer check-in a mais de 100m da academia;
 -[x] o check-in só é validado até 20mins após criado;
--[] o check-in só pode ser validado por admins;
--[] a academia só pode ser cadastrada por admins;
+-[x] o check-in só pode ser validado por admins;
+-[x] a academia só pode ser cadastrada por admins;
 
 ## RNFs (Requisitos não-funcionais)
 
 -[x] a senha do usuário deve ser criptografada;
 -[x] dados da aplicação precisam estar em um banco PostgreSQL;
 -[x] listas de dados precisam estar paginadas com 20 itens por página;
--[] o usuário deve ser identificado por um JWT (JSON Web Token);
+-[x] o usuário deve ser identificado por um JWT (JSON Web Token);

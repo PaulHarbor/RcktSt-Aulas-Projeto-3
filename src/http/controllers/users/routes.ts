@@ -7,20 +7,20 @@ import { refresh } from "./refresh";
 
 export async function userRoutes(app:FastifyInstance){
 
-    //se fizerem um POST na rota '/users', executamos a função 'register' de ./controllers/register.ts
+    //if a POST is made in the '/users' route, we run the 'register' function from ./register.ts
     app.post('/users', register)
 
-    //POST na rota '/sessions' é autenticação (tentativa de login)
+    //POST on the '/sessions' route is authentication attempt
     app.post('/sessions', authenticate)
 
-    //esta rota deve ser chamada caso o user perca autenticação
+    //this route is called if the user needs to refresh his/her authentication
     app.patch('/token/refresh', refresh)
 
-    //==========ROTAS DE USUÁRIO AUTENTICADO==========
+    //==========AUTHENTICATED USER ROUTES==========
 
-    //rota pra profile do usuário
+    //route for user profile
     app.get('/me',{onRequest:[verifyJWT]}, profile)
-    //o 'onRequest' executará antes do 'profile'
-    //ele vai passar a request e a reply pra o método verifyJWT
-    //o método verifica se o token é genuíno
+    //the 'onRequest' method will run before the profile method
+    //it will pass the request and reply to the verifyJWT method
+    //it will verify if the token is valid
 }

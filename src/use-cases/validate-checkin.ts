@@ -4,47 +4,46 @@ import { ResourceNotFoundError } from "./errors/resource-not-found-error";
 import dayjs from "dayjs";
 import { LateCheckinValidationError } from "./errors/late-checkin-validation-error";
 
-
-//criando interfaces para request e response
 interface ValidateCheckInUseCaseRequest {
-    checkInId:string
+  checkInId: string
 
 }
 
 interface ValidateCheckInUseCaseResponse {
-    checkIn: CheckIn
+  checkIn: CheckIn
 }
 
-//classe para validação de checkin de usuário
 export class ValidateCheckInUseCase {
 
-    constructor(private checkinsRepository: CheckInRepository) {}
+  constructor(private checkinsRepository: CheckInRepository) { }
 
-    async execute({
-        checkInId        
-    }:ValidateCheckInUseCaseRequest):Promise<ValidateCheckInUseCaseResponse> {
+  async execute({
+    checkInId
+  }: ValidateCheckInUseCaseRequest): Promise<ValidateCheckInUseCaseResponse> {
 
-        const checkIn = await this.checkinsRepository.findById(checkInId)
+    //to validate the check-in, we need to find it first
+    const checkIn = await this.checkinsRepository.findById(checkInId)
 
-        if(!checkIn){
-            throw new ResourceNotFoundError()
-        }
-
-        //calculando distancia da data atual e da criação do checkin
-        const distanceInMinutesFromCheckInCreation = dayjs(new Date())
-            .diff(checkIn.created_at,'minutes')
-
-        //se mais de 20mins tiverem se passado desde a criação do checkin
-        if (distanceInMinutesFromCheckInCreation > 20){
-            throw new LateCheckinValidationError()
-        }
-
-        checkIn.validated_at = new Date()
-
-        await this.checkinsRepository.update(checkIn)
-        
-        return {
-            checkIn,
-        }
+    if (!checkIn) {
+      throw new ResourceNotFoundError()
     }
+
+    //calculating difference in minutes between today and the check-ins creation date
+    const distanceInMinutesFromCheckInCreation = dayjs(new Date())
+      .diff(checkIn.created_at, 'minutes')
+
+    //if more than 20mins have passed, check-in can't be validated anymore
+    if (distanceInMinutesFromCheckInCreation > 20) {
+      throw new LateCheckinValidationError()
+    }
+
+    checkIn.validated_at = new Date() //we update the found check-in's 'validated_at' property with today's date
+    
+    //and send it to the repository function to update
+    await this.checkinsRepository.update(checkIn)
+
+    return {
+      checkIn,
+    }
+  }
 }

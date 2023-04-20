@@ -8,14 +8,14 @@ const envSchema = z.object({
 })
 
 const _env = envSchema.safeParse(process.env)
-//validando se as variáveis de environment de process.env estão de acordo com o envSchema
+//validating if the environment variables conform to the schema
 
 if(_env.success === false){
     console.error('💩 Invalid environment variables...', _env.error.format())
-    //error.format faz com que a formatação da mensagem de erro seja um pouco mais legível
+    //error.format makes the error formatting a bit more legible
 
     throw new Error('💩 Invalid environment variables...')
-    //o throw impede o app de continuar se as variáveis de environment não forem válidas
+    //this throw stops the application from continuing if the environment variables are invalid
 }
 
 export const env = _env.data
