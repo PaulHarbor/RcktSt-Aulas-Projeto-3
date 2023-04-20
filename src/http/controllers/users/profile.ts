@@ -5,15 +5,14 @@ export async function profile (req: FastifyRequest, rep: FastifyReply) {
     
     const getUserProfile = makeGetUserProfileUseCase()
 
-    const {user} = await getUserProfile.execute({
-        //userId: (req.user as FastifyJWT).user.sub
-        userId: req.user.sub
+    const {user} = await getUserProfile.execute({        
+        userId: req.user.sub //sending userId from the token
     })
 
     return rep.status(200).send({
         user:{
-            ...user, //retorne todos os dados de user, MAS...
-            password_hash: undefined //não mostre a hash do password
+            ...user, //return user data BUT...
+            password_hash: undefined //don't show the password hash
         }
     })
 }

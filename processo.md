@@ -47,6 +47,9 @@
 # Instalou e configurou o ESLint mas eu não fiz isso
 <!-- >:( -->
 
+# Inicializado o tsc
+  tsc --init
+
 # Alterado tsconfig.json pra criar aliases de importação
     "baseUrl": "./",                                  
     "paths": {
@@ -225,7 +228,7 @@
     "main": "prisma-test-environment.ts"
 
 # Executado 'npm link' na pasta vitest-environment-prisma
-<!--para linkar essa pasta e pode instalá-la no projeto-->
+<!--para linkar essa pasta e poder instalá-la no projeto-->
 
 # Voltamos pra pasta root e executamos o comando abaixo
     npm link vitest-environment-prisma

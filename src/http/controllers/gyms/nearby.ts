@@ -13,11 +13,9 @@ export async function nearby(req: FastifyRequest, rep: FastifyReply) {
     })
   })
 
-  //extraindo dados da request após validar usando o schema do Zod
-  const { latitude, longitude }
-    = nearbyGymsQuerySchema.parse(req.query)
+  //we use .query for GET methods because their requests have no body
+  const { latitude, longitude } = nearbyGymsQuerySchema.parse(req.query)
 
-  //chamando a factory
   const fetchNearbyGymsUseCase = makeFetchNearbyGymsUseCase()
 
   const { gyms } = await fetchNearbyGymsUseCase.execute({

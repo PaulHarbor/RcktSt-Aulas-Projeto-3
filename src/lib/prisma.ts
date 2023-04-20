@@ -3,6 +3,6 @@ import { env } from "@/env";
 
 export const prisma = new PrismaClient({
 
-    //se o ambiente for de desenvolvimento, gerar logs das queries
+    //if the environment is 'dev', generate query logs
     log: env.NODE_ENV === 'dev' ? ['query'] : []
 })

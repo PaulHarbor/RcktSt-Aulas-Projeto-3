@@ -7,15 +7,14 @@ export async function history (req: FastifyRequest, rep: FastifyReply) {
     const checkinHistoryQuerySchema = z.object({
         page: z.coerce.number().min(1).default(1)
     })
-
-    //extraindo dados da request após validar usando o schema do Zod
+    
+    //we use .query because GET requests have no body
     const { page } = checkinHistoryQuerySchema.parse(req.query)
-
-    //chamando a factory
+    
     const fetchUserCheckinsHistoryUseCase = makeFetchUserCheckinHistoryUseCase()
     
     const { checkIns } = await fetchUserCheckinsHistoryUseCase.execute({
-        userId:req.user.sub,
+        userId:req.user.sub, //getting user ID from the token
         page
     })    
 

@@ -3,48 +3,48 @@ import { User } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 
-//interface pra request de dados de user a ser criado
+//interface for user creation requests
 interface RegisterUserCaseRequest {
     name: string,
     email: string,
     password: string
 }
 
-//interface pra resposta de retorno de user recém criado
+//interface user creation responses
 interface RegisterUseCaseResponse {
-    user: User
+    user: User //this User is defined in prisma/schema.prisma
 }
 
-//exportando classe que cadastra usuário
-//essa classe consegue cadastrar usando qualquer repositório
+//exporting user registering class
+//this class is meant to be able to use any kind of repository
 export class RegisterUseCase{
 
-    //o construtor recebe a dependência como argumento
-    //essa dependência é uma interface criada para qualquer tipo de repositório (ex.:Prisma)
+    //its constructor receives the repository as an argument
+    //this dependency is an interface created to use any repository (ex.:Prisma)
     constructor(private usersRepository:UsersRepository) {}
 
-    //função que cadastra usuário, a função recebe um argumento do tipo RegisterUseCaseRequest da interface acima
-    //note que ela está sendo chamada lá em controllers/register.ts
+    //this function registers a new user, it receives data of type RegisterUseCaseRequest (the interface above)
+    //it will be called in controllers/register.ts
     async execute({
         name,
         email,
-        password             //e retorna uma promise com dados do tipo RegisterUseCaseResponse (a outra interface acima)
+        password             //it returns a promise with data of type RegisterUseCaseResponse (the other interface above)
     }: RegisterUserCaseRequest): Promise<RegisterUseCaseResponse>{    
         
-        //primeiro hasheamos o password do novo usuário
-        //o 6 é o número de passes do algoritmo de hashing
+        //first we hash the new user's password
+        //6 is the amount of passes of the hashing algorithm
         const password_hash = await hash(password, 6) 
     
-        //checar se já existe usuário com mesmo email cadastrado
-        //como usersRepository implementa a interface, é obrigatório possuir os métodos dela
-        //nesse caso: os métodos findByEmail e create
+        //check if there is already someone registered with the same email
+        //since usersRepository implements the interface, it must have the same methods
+        //in this case, create and findByEmail
         const userWithSameEmail = await this.usersRepository.findByEmail(email)
     
         if(userWithSameEmail){
-            throw new UserAlreadyExistsError() //erro criado lá em use-cases/errors
+            throw new UserAlreadyExistsError() //error defined in use-cases/errors
         }
         
-        //aqui cadastramos propriamente o user
+        //here we actually register the user
         const user = await this.usersRepository.create({
             name,
             email,

@@ -7,7 +7,7 @@ export async function create (req: FastifyRequest, rep: FastifyReply) {
     const createCheckinParamsSchema = z.object({
         gymId: z.string().uuid()
     })
-
+    
     const createCheckinBodySchema = z.object({
         latitude: z.number().refine(value =>{
             return Math.abs(value) <= 90
@@ -17,16 +17,15 @@ export async function create (req: FastifyRequest, rep: FastifyReply) {
         })
     })
 
-    const { gymId } = createCheckinParamsSchema.parse(req.params)
-    //extraindo dados da request após validar usando o schema do Zod
-    const { latitude, longitude } = createCheckinBodySchema.parse(req.body)
+    const { gymId } = createCheckinParamsSchema.parse(req.params) //we get the params from the URL
+    
+    const { latitude, longitude } = createCheckinBodySchema.parse(req.body) //user coordinates are sent through the request body
 
-    //chamando a factory
     const checkinUseCase = makeCheckInUseCase()
     
     await checkinUseCase.execute({
         gymId,
-        userId: req.user.sub,
+        userId: req.user.sub, //this 'sub' comes from the token
         userLatitude: latitude,
         userLongitude: longitude
     })    

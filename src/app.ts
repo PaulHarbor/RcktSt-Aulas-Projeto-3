@@ -7,17 +7,17 @@ import fastifyJwt from '@fastify/jwt'
 import { gymsRoutes } from './http/controllers/gyms/routes'
 import { checkinRoutes } from './http/controllers/checkins/routes'
 
-export const app = fastify()
+export const app = fastify() //creating fastify instance to deal with HTTP functionality
 
-//registrando o módulo de JWT do Fastify com palavra-chave importada do .env
+//registering the JWT module and using the .env secret word
 app.register(fastifyJwt,{
     secret:env.JWT_SECRET,
-    cookie:{
+    cookie:{ //configuring the cookie
       cookieName:'refreshToken',
       signed:false
     },
     sign:{
-      expiresIn:'10m'
+      expiresIn:'10m' //expiration of the JWT signature
     }
 })
 
@@ -27,13 +27,13 @@ app.register(userRoutes)
 app.register(gymsRoutes)
 app.register(checkinRoutes)
 
-//esse '_' antes da request simboliza que não usaremos request para nada neste bloco
+//this '_' before the request means we won't be using 'req' for anything
 app.setErrorHandler((error, _req, rep)=>{
 
     if(error instanceof ZodError){
         return rep.status(400)
                   .send({
-                    message:'⛔Validation error...',
+                    message:'⛔ Validation error...',
                     issues: error.format()
                   })  
     }
@@ -41,11 +41,11 @@ app.setErrorHandler((error, _req, rep)=>{
     if(env.NODE_ENV !== 'production'){
         console.error(error)
     } else {
-        //Logar erro para ferramenta externa
+        //Log error to external tool
         //Ex: Datadog, NewRelic, Sentry
     }
 
-    //se cair nesse retorno, é pq o erro é desconhecido
+    //if it comes down to this return, the error is unknown
     return rep.status(500).send({
         message:'🔥 Internal server error...'
     })

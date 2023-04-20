@@ -3,7 +3,9 @@ import { z } from "zod"
 import { makeCreateGymUseCase } from "@/use-cases/factories/make-create-gym-use-case"
 
 export async function create(req: FastifyRequest, rep: FastifyReply) {
+  //a request comes in through a route
 
+  //its body should conform to this schema
   const createGymBodySchema = z.object({
     title: z.string(),
     description: z.string().nullable(),
@@ -16,13 +18,15 @@ export async function create(req: FastifyRequest, rep: FastifyReply) {
     })
   })
 
-  //extraindo dados da request após validar usando o schema do Zod
+  //we extract the data from the request's body
   const { title, description, phone, latitude, longitude }
     = createGymBodySchema.parse(req.body)
 
-  //chamando a factory
+  //fabricate the gym creation class
   const createGymUseCase = makeCreateGymUseCase()
 
+  //call its 'execute' method, which will call the use case's 'create' method
+  //which will in turn call Prisma's own 'create' method
   await createGymUseCase.execute({
     title,
     description,

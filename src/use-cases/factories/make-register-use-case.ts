@@ -1,16 +1,16 @@
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository"
 import { RegisterUseCase } from "../register"
 
-//aqui estamos implementando o Factory Pattern
-//criamos uma função para 'fabricar' um registerUseCase com suas dependências
+//here we implement the Factory Pattern
+//we create a function to 'fabricate' a register use case
 
 export function makeRegisterUseCase(){
 
-    //uma variável recebe o repositório que queiramos usar (Prisma, nesse caso)
+    //this variable receives the repository (Prisma in this case)
     const usersRepository = new PrismaUsersRepository()
-    //instancia-se uma classe importada da pasta use-cases que recebe o repositório
+    //then we instance a RegisterUseCase object that gets constructed using the repository as dependency
     const registerUseCase = new RegisterUseCase(usersRepository)
-    //dessa forma, para trocar de repositório, basta mudar o que usersRepository recebe
+    //this way, changing repositories is easy
 
     return registerUseCase
 }
